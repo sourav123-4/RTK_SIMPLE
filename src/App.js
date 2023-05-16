@@ -1,23 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import { useDispatch, useSelector } from "react-redux";
+import { faker } from "@faker-js/faker";
+import { addUser, removeAllUser, removeUser } from "./store/slices/userSlices";
+import "./App.css";
 
 function App() {
+  const dispatch = useDispatch();
+  const name = useSelector((state) => state.users);
+
+  const handleAddUser = () => {
+    dispatch(addUser(faker.name.fullName()));
+  };
+
+  const handleClearAllUser = () => {
+    dispatch(removeAllUser());
+  };
+
+  const handleDeleteUser = (id) => {
+    dispatch(removeUser(id));
+  };
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Redux Toolkit Learning</h1>
+      <button className="btn" onClick={handleAddUser}>
+        Add user
+      </button>
+      <div className="users">
+        {name?.map((user, id) => {
+          return (
+            <div key={id} className="user-row">
+              <span>{user}</span>
+              <button className="btn" onClick={() => handleDeleteUser(id)}>
+                Delete user
+              </button>
+            </div>
+          );
+        })}
+      </div>
+      {name.length !== 0 && (
+        <button className="btn" onClick={handleClearAllUser}>
+          Remove All Users
+        </button>
+      )}
     </div>
   );
 }
